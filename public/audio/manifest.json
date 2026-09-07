@@ -1,0 +1,359 @@
+{
+  "title": {
+    "seconds": 18.461,
+    "peak": 0.4018,
+    "rms": 0.0645,
+    "loop": true,
+    "seam": 1.1e-05
+  },
+  "customize": {
+    "seconds": 20.425,
+    "peak": 0.4136,
+    "rms": 0.0609,
+    "loop": true,
+    "seam": 5e-06
+  },
+  "classroom": {
+    "seconds": 16.552,
+    "peak": 0.4043,
+    "rms": 0.0679,
+    "loop": true,
+    "seam": 2.1e-05
+  },
+  "art": {
+    "seconds": 17.778,
+    "peak": 0.4108,
+    "rms": 0.0652,
+    "loop": true,
+    "seam": 3.6e-05
+  },
+  "library": {
+    "seconds": 23.415,
+    "peak": 0.3986,
+    "rms": 0.0568,
+    "loop": true,
+    "seam": 0.0
+  },
+  "boss": {
+    "seconds": 15.738,
+    "peak": 0.4154,
+    "rms": 0.0694,
+    "loop": true,
+    "seam": 4.9e-05
+  },
+  "practice": {
+    "seconds": 21.818,
+    "peak": 0.3907,
+    "rms": 0.0587,
+    "loop": true,
+    "seam": 0.0
+  },
+  "collection": {
+    "seconds": 24.0,
+    "peak": 0.4047,
+    "rms": 0.0564,
+    "loop": true,
+    "seam": 0.0
+  },
+  "win": {
+    "seconds": 2.0,
+    "peak": 0.3945,
+    "rms": 0.0913,
+    "loop": false,
+    "seam": 0.0
+  },
+  "lose": {
+    "seconds": 2.0,
+    "peak": 0.4034,
+    "rms": 0.0915,
+    "loop": false,
+    "seam": 0.0
+  },
+  "draw": {
+    "seconds": 2.0,
+    "peak": 0.3866,
+    "rms": 0.0904,
+    "loop": false,
+    "seam": 0.0
+  },
+  "challenge": {
+    "seconds": 2.0,
+    "peak": 0.393,
+    "rms": 0.0914,
+    "loop": false,
+    "seam": 0.0
+  },
+  "select": {
+    "seconds": 0.16,
+    "peak": 0.1418,
+    "rms": 0.0282,
+    "loop": false,
+    "seam": 0.0
+  },
+  "confirm": {
+    "seconds": 0.34,
+    "peak": 0.142,
+    "rms": 0.021,
+    "loop": false,
+    "seam": 0.0
+  },
+  "back": {
+    "seconds": 0.34,
+    "peak": 0.1505,
+    "rms": 0.021,
+    "loop": false,
+    "seam": 0.0
+  },
+  "attach": {
+    "seconds": 0.16,
+    "peak": 0.1637,
+    "rms": 0.0297,
+    "loop": false,
+    "seam": 0.0
+  },
+  "detach": {
+    "seconds": 0.34,
+    "peak": 0.1486,
+    "rms": 0.0198,
+    "loop": false,
+    "seam": 0.0
+  },
+  "replace": {
+    "seconds": 0.34,
+    "peak": 0.2013,
+    "rms": 0.0205,
+    "loop": false,
+    "seam": 0.0
+  },
+  "body": {
+    "seconds": 0.34,
+    "peak": 0.1739,
+    "rms": 0.0212,
+    "loop": false,
+    "seam": 0.0
+  },
+  "color": {
+    "seconds": 0.16,
+    "peak": 0.1808,
+    "rms": 0.031,
+    "loop": false,
+    "seam": 0.0
+  },
+  "save": {
+    "seconds": 0.34,
+    "peak": 0.1689,
+    "rms": 0.0205,
+    "loop": false,
+    "seam": 0.0
+  },
+  "unlock": {
+    "seconds": 0.34,
+    "peak": 0.1533,
+    "rms": 0.0202,
+    "loop": false,
+    "seam": 0.0
+  },
+  "aim": {
+    "seconds": 0.16,
+    "peak": 0.1518,
+    "rms": 0.03,
+    "loop": false,
+    "seam": 0.0
+  },
+  "launch": {
+    "seconds": 0.34,
+    "peak": 0.1779,
+    "rms": 0.0471,
+    "loop": false,
+    "seam": 0.0
+  },
+  "slide_rubber": {
+    "seconds": 0.34,
+    "peak": 0.1704,
+    "rms": 0.0311,
+    "loop": false,
+    "seam": 0.0
+  },
+  "slide_plastic": {
+    "seconds": 0.34,
+    "peak": 0.2146,
+    "rms": 0.03,
+    "loop": false,
+    "seam": 0.0
+  },
+  "slide_metal": {
+    "seconds": 0.34,
+    "peak": 0.2208,
+    "rms": 0.0289,
+    "loop": false,
+    "seam": 0.0
+  },
+  "roll": {
+    "seconds": 0.34,
+    "peak": 0.2158,
+    "rms": 0.0304,
+    "loop": false,
+    "seam": 0.0
+  },
+  "jump": {
+    "seconds": 0.34,
+    "peak": 0.1771,
+    "rms": 0.0471,
+    "loop": false,
+    "seam": 0.0
+  },
+  "land": {
+    "seconds": 0.34,
+    "peak": 0.1661,
+    "rms": 0.0202,
+    "loop": false,
+    "seam": 0.0
+  },
+  "land_heavy": {
+    "seconds": 0.34,
+    "peak": 0.1314,
+    "rms": 0.02,
+    "loop": false,
+    "seam": 0.0
+  },
+  "fall": {
+    "seconds": 0.34,
+    "peak": 0.1777,
+    "rms": 0.0471,
+    "loop": false,
+    "seam": 0.0
+  },
+  "rubber": {
+    "seconds": 0.34,
+    "peak": 0.1507,
+    "rms": 0.0205,
+    "loop": false,
+    "seam": 0.0
+  },
+  "wood": {
+    "seconds": 0.34,
+    "peak": 0.1556,
+    "rms": 0.02,
+    "loop": false,
+    "seam": 0.0
+  },
+  "ruler": {
+    "seconds": 0.34,
+    "peak": 0.1514,
+    "rms": 0.0197,
+    "loop": false,
+    "seam": 0.0
+  },
+  "metal": {
+    "seconds": 0.34,
+    "peak": 0.1569,
+    "rms": 0.0213,
+    "loop": false,
+    "seam": 0.0
+  },
+  "paper": {
+    "seconds": 0.34,
+    "peak": 0.2172,
+    "rms": 0.0317,
+    "loop": false,
+    "seam": 0.0
+  },
+  "bounce": {
+    "seconds": 0.34,
+    "peak": 0.1784,
+    "rms": 0.0471,
+    "loop": false,
+    "seam": 0.0
+  },
+  "strike": {
+    "seconds": 0.34,
+    "peak": 0.1481,
+    "rms": 0.0197,
+    "loop": false,
+    "seam": 0.0
+  },
+  "wall": {
+    "seconds": 0.34,
+    "peak": 0.1402,
+    "rms": 0.0203,
+    "loop": false,
+    "seam": 0.0
+  },
+  "stapler": {
+    "seconds": 0.34,
+    "peak": 0.1332,
+    "rms": 0.0198,
+    "loop": false,
+    "seam": 0.0
+  },
+  "magnet": {
+    "seconds": 0.34,
+    "peak": 0.1781,
+    "rms": 0.0471,
+    "loop": false,
+    "seam": 0.0
+  },
+  "glide": {
+    "seconds": 0.34,
+    "peak": 0.1758,
+    "rms": 0.0209,
+    "loop": false,
+    "seam": 0.0
+  },
+  "chalk": {
+    "seconds": 0.34,
+    "peak": 0.2232,
+    "rms": 0.032,
+    "loop": false,
+    "seam": 0.0
+  },
+  "brush": {
+    "seconds": 0.34,
+    "peak": 0.2268,
+    "rms": 0.0303,
+    "loop": false,
+    "seam": 0.0
+  },
+  "glue": {
+    "seconds": 0.34,
+    "peak": 0.2097,
+    "rms": 0.0317,
+    "loop": false,
+    "seam": 0.0
+  },
+  "curve": {
+    "seconds": 0.34,
+    "peak": 0.2131,
+    "rms": 0.0311,
+    "loop": false,
+    "seam": 0.0
+  },
+  "hook": {
+    "seconds": 0.34,
+    "peak": 0.1778,
+    "rms": 0.02,
+    "loop": false,
+    "seam": 0.0
+  },
+  "start": {
+    "seconds": 0.34,
+    "peak": 0.1746,
+    "rms": 0.0206,
+    "loop": false,
+    "seam": 0.0
+  },
+  "turn": {
+    "seconds": 0.34,
+    "peak": 0.1361,
+    "rms": 0.0202,
+    "loop": false,
+    "seam": 0.0
+  },
+  "ambient": {
+    "seconds": 12.0,
+    "peak": 0.0439,
+    "rms": 0.007,
+    "loop": true,
+    "seam": 0.000186
+  }
+}

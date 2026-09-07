@@ -1,0 +1,690 @@
+{
+  "generator": "Blender 5.1.2",
+  "units": "metres; uniform game scale 50; glTF +Y up, +Z front",
+  "assets": {
+    "body_standard": {
+      "glb": "/models/body_standard.glb",
+      "icon": "/icons/body_standard.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -0.6560000125318766,
+          -0.305499997921288,
+          -1.4999999664723873
+        ],
+        "max": [
+          0.6560000125318766,
+          0.3209999995306134,
+          1.4999999664723873
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_standard"
+    },
+    "body_mini": {
+      "glb": "/models/body_mini.glb",
+      "icon": "/icons/body_mini.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -0.5059999879449606,
+          -0.20550000481307507,
+          -1.0499999858438969
+        ],
+        "max": [
+          0.5059999879449606,
+          0.22100000642240047,
+          1.0499999858438969
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_mini"
+    },
+    "body_wide": {
+      "glb": "/models/body_wide.glb",
+      "icon": "/icons/body_wide.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -1.0060000233352184,
+          -0.2555000130087137,
+          -1.3500000350177288
+        ],
+        "max": [
+          1.0060000233352184,
+          0.27099999133497477,
+          1.3500000350177288
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_wide"
+    },
+    "body_round": {
+      "glb": "/models/body_round.glb",
+      "icon": "/icons/body_round.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -0.8559999987483025,
+          -0.305499997921288,
+          -0.9499999694526196
+        ],
+        "max": [
+          0.8559999987483025,
+          0.3209999995306134,
+          0.9499999694526196
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_round"
+    },
+    "body_tall": {
+      "glb": "/models/body_tall.glb",
+      "icon": "/icons/body_tall.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -0.6560000125318766,
+          -0.5554999690502882,
+          -1.1500000022351742
+        ],
+        "max": [
+          0.6560000125318766,
+          0.5710000172257423,
+          1.1500000022351742
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_tall"
+    },
+    "body_slim": {
+      "glb": "/models/body_slim.glb",
+      "icon": "/icons/body_slim.png",
+      "triangles": 764,
+      "boundsGame": {
+        "min": [
+          -0.43100002221763134,
+          -0.2555000130087137,
+          -1.7500000074505806
+        ],
+        "max": [
+          0.43100002221763134,
+          0.27099999133497477,
+          1.7500000074505806
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "body_slim"
+    },
+    "part_ruler": {
+      "glb": "/models/part_ruler.glb",
+      "icon": "/icons/part_ruler.png",
+      "triangles": 829,
+      "boundsGame": {
+        "min": [
+          -0.8999999612569809,
+          -0.09500000160187483,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.8999999612569809,
+          0.09500000160187483,
+          0.6649999879300594
+        ]
+      },
+      "meshObjects": 20,
+      "sourceCollection": "part_ruler"
+    },
+    "part_pencil": {
+      "glb": "/models/part_pencil.glb",
+      "icon": "/icons/part_pencil.png",
+      "triangles": 624,
+      "boundsGame": {
+        "min": [
+          -0.139999995008111,
+          -0.1300000469200313,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.139999995008111,
+          0.1300000469200313,
+          1.679999940097332
+        ]
+      },
+      "meshObjects": 6,
+      "sourceCollection": "part_pencil"
+    },
+    "part_binder_clip": {
+      "glb": "/models/part_binder_clip.glb",
+      "icon": "/icons/part_binder_clip.png",
+      "triangles": 1632,
+      "boundsGame": {
+        "min": [
+          -0.32500000670552254,
+          -0.32500000670552254,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.32500000670552254,
+          0.29698966536670923,
+          0.5975000094622374
+        ]
+      },
+      "meshObjects": 8,
+      "sourceCollection": "part_binder_clip"
+    },
+    "part_rubber_band": {
+      "glb": "/models/part_rubber_band.glb",
+      "icon": "/icons/part_rubber_band.png",
+      "triangles": 2476,
+      "boundsGame": {
+        "min": [
+          -0.5439999978989363,
+          -0.19499999471008778,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.5439999978989363,
+          0.19499999471008778,
+          0.6539999973028898
+        ]
+      },
+      "meshObjects": 8,
+      "sourceCollection": "part_rubber_band"
+    },
+    "part_sticky_note": {
+      "glb": "/models/part_sticky_note.glb",
+      "icon": "/icons/part_sticky_note.png",
+      "triangles": 996,
+      "boundsGame": {
+        "min": [
+          -0.808934960514307,
+          -0.09500000160187483,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.808934960514307,
+          0.11818880448117852,
+          0.8486849255859852
+        ]
+      },
+      "meshObjects": 7,
+      "sourceCollection": "part_sticky_note"
+    },
+    "part_pen_cap": {
+      "glb": "/models/part_pen_cap.glb",
+      "icon": "/icons/part_pen_cap.png",
+      "triangles": 2156,
+      "boundsGame": {
+        "min": [
+          -0.21100000012665987,
+          -0.2749999985098839,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.21100000012665987,
+          0.3134999889880419,
+          0.8124999701976776
+        ]
+      },
+      "meshObjects": 6,
+      "sourceCollection": "part_pen_cap"
+    },
+    "part_triangle_ruler": {
+      "glb": "/models/part_triangle_ruler.glb",
+      "icon": "/icons/part_triangle_ruler.png",
+      "triangles": 975,
+      "boundsGame": {
+        "min": [
+          -0.7249999791383743,
+          -0.09500000160187483,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.7209391333162785,
+          0.09500000160187483,
+          1.346220076084137
+        ]
+      },
+      "meshObjects": 17,
+      "sourceCollection": "part_triangle_ruler"
+    },
+    "part_eraser_shield": {
+      "glb": "/models/part_eraser_shield.glb",
+      "icon": "/icons/part_eraser_shield.png",
+      "triangles": 761,
+      "boundsGame": {
+        "min": [
+          -0.5499999970197678,
+          -0.3280000062659383,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.5499999970197678,
+          0.3379999892786145,
+          0.5350000225007534
+        ]
+      },
+      "meshObjects": 5,
+      "sourceCollection": "part_eraser_shield"
+    },
+    "part_tape_roll": {
+      "glb": "/models/part_tape_roll.glb",
+      "icon": "/icons/part_tape_roll.png",
+      "triangles": 2612,
+      "boundsGame": {
+        "min": [
+          -0.30249999836087227,
+          -0.35000001080334187,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.30300000216811895,
+          0.35000001080334187,
+          0.7300000172108412
+        ]
+      },
+      "meshObjects": 5,
+      "sourceCollection": "part_tape_roll"
+    },
+    "part_correction_tape": {
+      "glb": "/models/part_correction_tape.glb",
+      "icon": "/icons/part_correction_tape.png",
+      "triangles": 3748,
+      "boundsGame": {
+        "min": [
+          -0.31999999191612005,
+          -0.1449999981559813,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.31999999191612005,
+          0.2099999925121665,
+          0.9999999776482582
+        ]
+      },
+      "meshObjects": 9,
+      "sourceCollection": "part_correction_tape"
+    },
+    "part_stapler": {
+      "glb": "/models/part_stapler.glb",
+      "icon": "/icons/part_stapler.png",
+      "triangles": 1508,
+      "boundsGame": {
+        "min": [
+          -0.2850000048056245,
+          -0.19499999471008778,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.2850000048056245,
+          0.2768683945760131,
+          1.0900000110268593
+        ]
+      },
+      "meshObjects": 7,
+      "sourceCollection": "part_stapler"
+    },
+    "part_magnet": {
+      "glb": "/models/part_magnet.glb",
+      "icon": "/icons/part_magnet.png",
+      "triangles": 1344,
+      "boundsGame": {
+        "min": [
+          -0.5100000184029341,
+          -0.19499999471008778,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.5100000184029341,
+          0.203000009059906,
+          0.9150000289082527
+        ]
+      },
+      "meshObjects": 9,
+      "sourceCollection": "part_magnet"
+    },
+    "part_paper_clip": {
+      "glb": "/models/part_paper_clip.glb",
+      "icon": "/icons/part_paper_clip.png",
+      "triangles": 808,
+      "boundsGame": {
+        "min": [
+          -0.3219999838620424,
+          -0.09500000160187483,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.32193148508667946,
+          0.09500000160187483,
+          1.3119999319314957
+        ]
+      },
+      "meshObjects": 3,
+      "sourceCollection": "part_paper_clip"
+    },
+    "part_sharpener": {
+      "glb": "/models/part_sharpener.glb",
+      "icon": "/icons/part_sharpener.png",
+      "triangles": 2668,
+      "boundsGame": {
+        "min": [
+          -0.3335000015795231,
+          -0.2199999988079071,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.3335000015795231,
+          0.2785000018775463,
+          0.649499986320734
+        ]
+      },
+      "meshObjects": 18,
+      "sourceCollection": "part_sharpener"
+    },
+    "part_chalk": {
+      "glb": "/models/part_chalk.glb",
+      "icon": "/icons/part_chalk.png",
+      "triangles": 676,
+      "boundsGame": {
+        "min": [
+          -0.1500000013038516,
+          -0.15000003622844815,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.1500000013038516,
+          0.15000003622844815,
+          0.8750000037252903
+        ]
+      },
+      "meshObjects": 7,
+      "sourceCollection": "part_chalk"
+    },
+    "part_brush": {
+      "glb": "/models/part_brush.glb",
+      "icon": "/icons/part_brush.png",
+      "triangles": 1673,
+      "boundsGame": {
+        "min": [
+          -0.42500002309679985,
+          -0.25900001637637615,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.42500002309679985,
+          0.20500000100582838,
+          0.5499999970197678
+        ]
+      },
+      "meshObjects": 49,
+      "sourceCollection": "part_brush"
+    },
+    "part_glue_stick": {
+      "glb": "/models/part_glue_stick.glb",
+      "icon": "/icons/part_glue_stick.png",
+      "triangles": 2040,
+      "boundsGame": {
+        "min": [
+          -0.21200000774115324,
+          -0.21200000774115324,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.21200000774115324,
+          0.21200000774115324,
+          0.9200000204145908
+        ]
+      },
+      "meshObjects": 18,
+      "sourceCollection": "part_glue_stick"
+    },
+    "part_crayon": {
+      "glb": "/models/part_crayon.glb",
+      "icon": "/icons/part_crayon.png",
+      "triangles": 2156,
+      "boundsGame": {
+        "min": [
+          -0.15399999683722854,
+          -0.15399999683722854,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.15399999683722854,
+          0.15399999683722854,
+          1.0200000368058681
+        ]
+      },
+      "meshObjects": 7,
+      "sourceCollection": "part_crayon"
+    },
+    "part_protractor": {
+      "glb": "/models/part_protractor.glb",
+      "icon": "/icons/part_protractor.png",
+      "triangles": 5403,
+      "boundsGame": {
+        "min": [
+          -0.7494767662137747,
+          -0.09500000160187483,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.7494767662137747,
+          0.09500000160187483,
+          0.8494768291711807
+        ]
+      },
+      "meshObjects": 52,
+      "sourceCollection": "part_protractor"
+    },
+    "part_pencil_extender": {
+      "glb": "/models/part_pencil_extender.glb",
+      "icon": "/icons/part_pencil_extender.png",
+      "triangles": 2416,
+      "boundsGame": {
+        "min": [
+          -0.1769999973475933,
+          -0.1769999973475933,
+          -0.1449999981559813
+        ],
+        "max": [
+          0.1769999973475933,
+          0.1769999973475933,
+          1.7000000923871994
+        ]
+      },
+      "meshObjects": 6,
+      "sourceCollection": "part_pencil_extender"
+    },
+    "prop_desk": {
+      "glb": "/models/prop_desk.glb",
+      "icon": "/icons/prop_desk.png",
+      "triangles": 1128,
+      "boundsGame": {
+        "min": [
+          -0.5005000159144402,
+          -0.4799999762326479,
+          -0.5005000159144402
+        ],
+        "max": [
+          0.5005000159144402,
+          0.5034999921917915,
+          0.5005000159144402
+        ]
+      },
+      "meshObjects": 6,
+      "sourceCollection": "prop_desk"
+    },
+    "prop_book": {
+      "glb": "/models/prop_book.glb",
+      "icon": "/icons/prop_book.png",
+      "triangles": 852,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5030000116676092,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "prop_book"
+    },
+    "prop_ruler_wall": {
+      "glb": "/models/prop_ruler_wall.glb",
+      "icon": "/icons/prop_ruler_wall.png",
+      "triangles": 524,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5049999803304672,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 23,
+      "sourceCollection": "prop_ruler_wall"
+    },
+    "prop_bridge": {
+      "glb": "/models/prop_bridge.glb",
+      "icon": "/icons/prop_bridge.png",
+      "triangles": 1000,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5060000345110893,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 10,
+      "sourceCollection": "prop_bridge"
+    },
+    "prop_bumper": {
+      "glb": "/models/prop_bumper.glb",
+      "icon": "/icons/prop_bumper.png",
+      "triangles": 1912,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5109999794512987,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 3,
+      "sourceCollection": "prop_bumper"
+    },
+    "prop_mat": {
+      "glb": "/models/prop_mat.glb",
+      "icon": "/icons/prop_mat.png",
+      "triangles": 404,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5040000192821026,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 19,
+      "sourceCollection": "prop_mat"
+    },
+    "prop_case": {
+      "glb": "/models/prop_case.glb",
+      "icon": "/icons/prop_case.png",
+      "triangles": 612,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.4999999888241291,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 4,
+      "sourceCollection": "prop_case"
+    },
+    "prop_seesaw": {
+      "glb": "/models/prop_seesaw.glb",
+      "icon": "/icons/prop_seesaw.png",
+      "triangles": 752,
+      "boundsGame": {
+        "min": [
+          -0.4999999888241291,
+          -0.4999999888241291,
+          -0.4999999888241291
+        ],
+        "max": [
+          0.4999999888241291,
+          0.5065000150352716,
+          0.4999999888241291
+        ]
+      },
+      "meshObjects": 4,
+      "sourceCollection": "prop_seesaw"
+    },
+    "prop_chair": {
+      "glb": "/models/prop_chair.glb",
+      "icon": "/icons/prop_chair.png",
+      "triangles": 2656,
+      "boundsGame": {
+        "min": [
+          -1.4999999664723873,
+          -2.1000001579523087,
+          -1.4000000432133675
+        ],
+        "max": [
+          1.4999999664723873,
+          3.150000050663948,
+          1.4000000432133675
+        ]
+      },
+      "meshObjects": 8,
+      "sourceCollection": "prop_chair"
+    },
+    "prop_lamp": {
+      "glb": "/models/prop_lamp.glb",
+      "icon": "/icons/prop_lamp.png",
+      "triangles": 1432,
+      "boundsGame": {
+        "min": [
+          -0.7499999832361937,
+          -1.6950000077486038,
+          -0.7499999832361937
+        ],
+        "max": [
+          0.7499999832361937,
+          1.8690336495637894,
+          1.7267519608139992
+        ]
+      },
+      "meshObjects": 4,
+      "sourceCollection": "prop_lamp"
+    }
+  }
+}
