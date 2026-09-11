@@ -3,7 +3,9 @@ import { add, bodyDef, getAssemblyStats, getEquipmentShapes, getEquipmentTransfo
 import type { ActorState, AssemblyStats, BattleConfig, BattleSnapshot, BattleView, GameEvent, Quat, ShapeSpec, Shot, SurfaceArea, Vec3 } from './types'
 
 export const FIXED_STEP=1/120
-export const MAX_SHOT_IMPULSE=13
+// フルパワーで相手（初期配置で約12離れている）へ確実に届き、
+// 押し出しきる余力を残す値。下げすぎると当たっても場外に出せない。
+export const MAX_SHOT_IMPULSE=30
 const length=(v:Vec3)=>Math.hypot(v.x,v.y,v.z)
 const subtract=(a:Vec3,b:Vec3):Vec3=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z})
 const copy=(v:Vec3):Vec3=>({x:v.x,y:v.y,z:v.z})
