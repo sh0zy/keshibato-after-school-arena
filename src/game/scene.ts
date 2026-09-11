@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { BODIES, PARTS } from './catalog'
 import { getEquipmentTransform } from './equipment'
 import type { BattleConfig, BattleView, Build, GameEvent, Quat, Settings, Shot, StageDef, Vec3 } from './types'
+import { assetUrl } from './assets'
 
 const loader=new GLTFLoader()
 const assets=new Map<string,Promise<THREE.Group>>()
@@ -77,7 +78,7 @@ export class GameScene {
   for(const radius of [3.95,4.4,4.9]){const r=ring(radius,0x77aa96,.15);r.position.y=-.065;this.floor.add(r)}
   this.controls.mouseButtons.LEFT=THREE.MOUSE.ROTATE;this.controls.touches.ONE=THREE.TOUCH.ROTATE;this.controls.target.set(0,.25,0);this.controls.minDistance=5;this.controls.maxDistance=15;this.camera.position.set(7.7,6.8,8.8);this.camera.lookAt(this.controls.target)
  }
- async showBattle(config:BattleConfig){const id=++this.serial;const assemblies=await Promise.all(config.players.map(p=>createAssembly(p.build)));const props=await Promise.all(config.stage.objects.map(o=>asset(`/models/prop_${({ruler:'ruler_wall',mat:'mat',case:'case'} as Record<string,string>)[o.kind]??o.kind}.glb`)));if(this.disposed||id!==this.serial){assemblies.forEach(destroy);props.forEach(destroy);return}this.clear();this.preview=false;this.stage=config.stage;this.actors=assemblies;this.content.add(...assemblies)
+ async showBattle(config:BattleConfig){const id=++this.serial;const assemblies=await Promise.all(config.players.map(p=>createAssembly(p.build)));const props=await Promise.all(config.stage.objects.map(o=>asset(assetUrl(`/models/prop_${({ruler:'ruler_wall',mat:'mat',case:'case'} as Record<string,string>)[o.kind]??o.kind}.glb`))));if(this.disposed||id!==this.serial){assemblies.forEach(destroy);props.forEach(destroy);return}this.clear();this.preview=false;this.stage=config.stage;this.actors=assemblies;this.content.add(...assemblies)
   for(let i=0;i<props.length;i++){const o=config.stage.objects[i],prop=props[i],box=new THREE.Box3().setFromObject(prop),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());prop.position.sub(center);const wrapper=new THREE.Group();wrapper.add(prop);wrapper.scale.set(o.size.x/(size.x||1),o.size.y/(size.y||1),o.size.z/(size.z||1));const outer=new THREE.Group();outer.add(wrapper);outer.position.set(o.position.x,o.position.y,o.position.z);outer.rotation.set(o.tilt??0,o.rotation??0,0);this.content.add(outer);this.objects.set(o.id,outer)}
   const ground=generatedMesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:config.stage.night?0x222d35:0xe0e6dc,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-8.3;ground.receiveShadow=true;this.floor.add(ground)
   this.scene.fog=new THREE.Fog(config.stage.night?0x24353c:0xe9eee5,65,130)

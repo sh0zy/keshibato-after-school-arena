@@ -1,22 +1,23 @@
 import type { BodyDef, Build, Combo, PartDef, ShapeSpec, Socket, StageDef, StageObject, Vec3 } from './types'
+import { assetUrl } from './assets'
 
 const v = (x:number,y:number,z:number):Vec3 => ({x,y,z})
 export const SOCKET_LABELS:Record<Socket,string> = {front:'前',back:'後ろ',left:'左',right:'右',top_left:'上面左',top_right:'上面右'}
 const sockets = Object.keys(SOCKET_LABELS) as Socket[]
 export const BODIES:BodyDef[] = [
-  {id:'standard',name:'スタンダード',subtitle:'はじめの相棒',description:'角が丸い、扱いやすい定番の消しゴム。好きな装備を素直に試せます。',weakness:'特化した強みは控えめ。',size:v(1.3,.6,3),mass:1,friction:.48,restitution:.12,color:'#f5f0df',model:'/models/body_standard.glb'},
-  {id:'mini',name:'スピードミニ',subtitle:'小さく、すばやく',description:'薄くて軽い。隙間を抜け、少ない力で遠くへ走ります。',weakness:'押し出されやすく、強すぎる発射に注意。',size:v(1,.4,2.1),mass:.65,friction:.39,restitution:.15,color:'#fff2ba',model:'/models/body_mini.glb'},
-  {id:'wide',name:'どっしりワイド',subtitle:'低く、どっしり',description:'低く幅広い重心で押し合いと踏ん張りが得意。',weakness:'動き出しが重く、細い橋では幅が気になります。',size:v(2,.5,2.7),mass:1.6,friction:.58,restitution:.09,color:'#d8eddc',model:'/models/body_wide.glb'},
-  {id:'round',name:'コロコロラウンド',subtitle:'ころんと、変則的',description:'丸みのあるシルエットで回転や反射を楽しめます。',weakness:'真っすぐ止めるには打点の工夫が必要。',size:v(1.7,.6,1.9),mass:.95,friction:.42,restitution:.23,color:'#ffd9da',model:'/models/body_round.glb'},
-  {id:'tall',name:'のっぽブロック',subtitle:'重心であそぼう',description:'高さがあり、装備する場所で転がり方が大きく変わります。',weakness:'横からの衝突で転びやすい本体です。',size:v(1.3,1.1,2.3),mass:1.3,friction:.5,restitution:.13,color:'#dcdcf4',model:'/models/body_tall.glb'},
-  {id:'slim',name:'ロングスリム',subtitle:'長さを、武器に',description:'細長い本体。細い道と回転時のリーチが持ち味です。',weakness:'横を押されると姿勢を崩しやすい。',size:v(.85,.5,3.5),mass:.85,friction:.44,restitution:.13,color:'#d0edf0',model:'/models/body_slim.glb'},
+  {id:'standard',name:'スタンダード',subtitle:'はじめの相棒',description:'角が丸い、扱いやすい定番の消しゴム。好きな装備を素直に試せます。',weakness:'特化した強みは控えめ。',size:v(1.3,.6,3),mass:1,friction:.48,restitution:.12,color:'#f5f0df',model:assetUrl('/models/body_standard.glb')},
+  {id:'mini',name:'スピードミニ',subtitle:'小さく、すばやく',description:'薄くて軽い。隙間を抜け、少ない力で遠くへ走ります。',weakness:'押し出されやすく、強すぎる発射に注意。',size:v(1,.4,2.1),mass:.65,friction:.39,restitution:.15,color:'#fff2ba',model:assetUrl('/models/body_mini.glb')},
+  {id:'wide',name:'どっしりワイド',subtitle:'低く、どっしり',description:'低く幅広い重心で押し合いと踏ん張りが得意。',weakness:'動き出しが重く、細い橋では幅が気になります。',size:v(2,.5,2.7),mass:1.6,friction:.58,restitution:.09,color:'#d8eddc',model:assetUrl('/models/body_wide.glb')},
+  {id:'round',name:'コロコロラウンド',subtitle:'ころんと、変則的',description:'丸みのあるシルエットで回転や反射を楽しめます。',weakness:'真っすぐ止めるには打点の工夫が必要。',size:v(1.7,.6,1.9),mass:.95,friction:.42,restitution:.23,color:'#ffd9da',model:assetUrl('/models/body_round.glb')},
+  {id:'tall',name:'のっぽブロック',subtitle:'重心であそぼう',description:'高さがあり、装備する場所で転がり方が大きく変わります。',weakness:'横からの衝突で転びやすい本体です。',size:v(1.3,1.1,2.3),mass:1.3,friction:.5,restitution:.13,color:'#dcdcf4',model:assetUrl('/models/body_tall.glb')},
+  {id:'slim',name:'ロングスリム',subtitle:'長さを、武器に',description:'細長い本体。細い道と回転時のリーチが持ち味です。',weakness:'横を押されると姿勢を崩しやすい。',size:v(.85,.5,3.5),mass:.85,friction:.44,restitution:.13,color:'#d0edf0',model:assetUrl('/models/body_slim.glb')},
 ]
 
 const box = (x:number,y:number,z:number,px=0,py=0,pz=z/2):ShapeSpec => ({kind:'box',size:v(x,y,z),position:v(px,py,pz)})
 const hull = (polygon:[number,number][],thickness=.12):ShapeSpec => ({kind:'hull',size:v(1,thickness,1),position:v(0,0,0),points:[-thickness/2,thickness/2].flatMap(y=>polygon.flatMap(([x,z])=>[x,y,z]))})
 const wire = (points:[number,number][],width=.1):ShapeSpec[] => points.slice(1).map((b,i)=>{const a=points[i],dx=b[0]-a[0],dz=b[1]-a[1],angle=Math.atan2(dx,dz);return {...box(width,.12,Math.hypot(dx,dz)+width,(a[0]+b[0])/2,0,(a[1]+b[1])/2),rotation:{x:0,y:Math.sin(angle/2),z:0,w:Math.cos(angle/2)}}})
 type PartInput = Omit<PartDef,'sockets'|'model'|'icon'|'metal'|'friction'|'restitution'> & Partial<Pick<PartDef,'metal'|'friction'|'restitution'>>
-const part=(p:PartInput):PartDef=>({sockets:[...sockets],model:`/models/part_${p.id}.glb`,icon:`/icons/part_${p.id}.png`,metal:false,friction:.4,restitution:.12,...p})
+const part=(p:PartInput):PartDef=>({sockets:[...sockets],model:assetUrl(`/models/part_${p.id}.glb`),icon:assetUrl(`/icons/part_${p.id}.png`),metal:false,friction:.4,restitution:.12,...p})
 export const PARTS:PartDef[] = [
   part({id:'ruler',name:'定規ブレード',shortName:'定規',description:'目盛り入りの短い定規。幅とリーチを増やします。',tactic:'横に広い面で相手の側面を押す。',weakness:'自分の当たる幅も増えます。',category:'押す',color:'#79cbd0',mass:.18,shapes:[box(1.8,.12,.65,0,0,.34)]}),
   part({id:'pencil',name:'鉛筆ランス',shortName:'鉛筆',description:'丸く安全な芯先を持つ六角の鉛筆。細い先端が接触点になります。',tactic:'相手の端を狙って回転させる。',weakness:'狙いがずれると空振りします。',category:'押す',color:'#efbd46',mass:.13,shapes:[box(.26,.26,1.42,0,0,.71),hull([[-.13,1.42],[.13,1.42],[0,1.7]],.24)]}),

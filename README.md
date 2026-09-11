@@ -2,6 +2,12 @@
 
 消しゴムと文房具で、机の上が対戦アリーナに。2つのパーツで自分だけの機体をつくる、時間制限のない3D消しピンゲーム。
 
+## 遊ぶ
+
+**https://sh0zy.github.io/keshibato-after-school-arena/**
+
+`main` ブランチへ push すると GitHub Actions が自動でビルドし、GitHub Pages へ公開します。
+
 ## 特徴
 
 - **機体カスタマイズ** — ボディ6種＋パーツ20種を組み合わせて自分だけの機体をつくる
