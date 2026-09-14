@@ -4,8 +4,9 @@ import type { ActorState, AssemblyStats, BattleConfig, BattleSnapshot, BattleVie
 
 export const FIXED_STEP=1/120
 // フルパワーで相手（初期配置で約12離れている）へ確実に届き、
-// 押し出しきる余力を残す値。下げすぎると当たっても場外に出せない。
-export const MAX_SHOT_IMPULSE=30
+// 全力の直撃およそ2〜2.5回で場外へ押し出せる値。
+// 上げすぎると一撃で決まり、下げすぎると当たっても出せなくなる。
+export const MAX_SHOT_IMPULSE=25
 const length=(v:Vec3)=>Math.hypot(v.x,v.y,v.z)
 const subtract=(a:Vec3,b:Vec3):Vec3=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z})
 const copy=(v:Vec3):Vec3=>({x:v.x,y:v.y,z:v.z})

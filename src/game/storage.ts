@@ -21,10 +21,11 @@ function finite(value:unknown,min:number,max:number):number {if(typeof value!=='
 export function validateStage(value:unknown):StageDef {
  const s=value as StageDef;if(!s||typeof s!=='object'||typeof s.name!=='string'||!Array.isArray(s.objects)||s.objects.length<1||s.objects.length>40)throw new Error('ステージは1〜40個の部品で作ってください。')
  const objects:StageObject[]=s.objects.map((o,i)=>{if(!o||!objectKinds.includes(o.kind))throw new Error('使えないステージ部品が含まれています。');return {id:`custom-${i}`,kind:o.kind,position:{x:finite(o.position?.x,-30,30),y:finite(o.position?.y,-5,8),z:finite(o.position?.z,-30,30)},size:{x:finite(o.size?.x,.15,40),y:finite(o.size?.y,.1,6),z:finite(o.size?.z,.15,40)},rotation:finite(o.rotation??0,-Math.PI*2,Math.PI*2),tilt:finite(o.tilt??0,-.5,.5),friction:finite(o.friction??.4,.05,1.5),color:typeof o.color==='string'&&/^#[\da-f]{6}$/i.test(o.color)?o.color:'#d4b58c',dynamic:o.kind==='seesaw'}})
- if(!Array.isArray(s.spawns)||s.spawns.length!==2)throw new Error('出発位置を2つ設定してください。')
+ // 収録ステージは4か所、工房で作るステージは2か所。エンジンは2〜4体に対応する。
+ if(!Array.isArray(s.spawns)||s.spawns.length<2||s.spawns.length>4)throw new Error('出発位置は2〜4か所にしてください。')
  const spawns=s.spawns.map(p=>({x:finite(p.x,-25,25),y:finite(p.y,0,9),z:finite(p.z,-25,25)}))
  for(const p of spawns){if(!objects.some(o=>o.kind!=='ruler'&&Math.abs(p.x-o.position.x)<o.size.x/2-.7&&Math.abs(p.z-o.position.z)<o.size.z/2-1.5&&p.y>o.position.y+o.size.y/2-.1&&p.y<o.position.y+o.size.y/2+2))throw new Error('出発位置は、消しゴム全体が乗れる足場の上に置いてください。')}
- if(Math.hypot(spawns[0].x-spawns[1].x,spawns[0].z-spawns[1].z)<4)throw new Error('出発位置は4マス以上離してください。')
+ for(let i=0;i<spawns.length;i++)for(let j=i+1;j<spawns.length;j++)if(Math.hypot(spawns[i].x-spawns[j].x,spawns[i].z-spawns[j].z)<4)throw new Error('出発位置は4マス以上離してください。')
  return {id:'custom',name:s.name.slice(0,30),subtitle:'きみだけのアリーナ',description:'自作のステージで、自由に実験しよう。',difficulty:'オリジナル',color:'#91c4ac',objects,spawns,fallY:-8,music:'art'}
 }
 export function readBattle():BattleSnapshot|null {const snapshot=load<BattleSnapshot|null>('battle',null);if(!snapshot||snapshot.version!==1||!snapshot.config||!Array.isArray(snapshot.actors)||snapshot.actors.length!==snapshot.config.players?.length)return null;try{snapshot.config.players.forEach(p=>validateBuild(p.build));return snapshot}catch{return null}}
