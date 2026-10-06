@@ -2,14 +2,18 @@ export interface Vec3 { x:number; y:number; z:number }
 export interface Quat { x:number; y:number; z:number; w:number }
 export type Socket = 'front'|'back'|'left'|'right'|'top_left'|'top_right'
 export interface Equipment { id:string; socket:Socket; rotation:number }
-export interface Build { body:string; equipment:Equipment[]; name:string; color:string; sleeve:string; face:string; pattern:string }
+// Moffy Booth で生まれたモッフィー。見た目から測った特徴と、そこから決まる性能を持ち歩く。
+export interface MoffyTraits { bulk:number; bright:number; vivid:number; fluff:number; hue:number; wide:number }
+export interface MoffyStats { mass:number; friction:number; restitution:number; size:Vec3 }
+export interface Moffy { id:string; name:string; image:string; color:string; outline:number[]; traits:MoffyTraits; stats:MoffyStats }
+export interface Build { body:string; equipment:Equipment[]; name:string; color:string; sleeve:string; face:string; pattern:string; moffy?:Moffy }
 export interface ShapeSpec { kind:'box'|'ball'|'cylinder'|'hull'; size:Vec3; position:Vec3; rotation?:Quat; points?:number[] }
 export interface BodyDef { id:string; name:string; subtitle:string; description:string; weakness:string; size:Vec3; mass:number; friction:number; restitution:number; color:string; model:string }
 export interface PartDef { id:string; name:string; shortName:string; description:string; tactic:string; weakness:string; category:string; color:string; mass:number; friction:number; restitution:number; metal:boolean; sockets:Socket[]; model:string; icon:string; shapes:ShapeSpec[]; active?:'jump'|'strike'|'magnet'|'chalk'|'glue'|'curve'; passive?:'glide'|'slide'|'brush'|'predict'; maxForce?:number }
 export interface StageObject { id:string; kind:'desk'|'book'|'ruler'|'bridge'|'bumper'|'mat'|'case'|'seesaw'; position:Vec3; size:Vec3; rotation?:number; tilt?:number; color?:string; friction?:number; dynamic?:boolean }
 export interface StageDef { id:string; name:string; subtitle:string; description:string; difficulty:string; color:string; objects:StageObject[]; spawns:Vec3[]; fallY:number; music:string; night?:boolean }
 export interface Combo { ids:[string,string]; name:string; description:string; tag:string }
-export type GameMode = 'cpu'|'local'|'practice'|'challenge'|'tour'|'tournament'|'team'|'custom'
+export type GameMode = 'cpu'|'local'|'practice'|'challenge'|'tour'|'tournament'|'team'|'custom'|'moffy'
 export type Difficulty = 'easy'|'normal'|'hard'
 export interface Shot { direction:Vec3; power:number; offset:number; jump:boolean; strike:boolean; magnet:'off'|'attract'|'repel'; chalk:boolean; glue:boolean; curve:number }
 export interface PlayerConfig { build:Build; team:number; cpu:boolean; name:string }

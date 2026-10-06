@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { BODIES, PARTS } from './catalog'
-import { getEquipmentTransform } from './equipment'
+import { buildBody, getEquipmentTransform } from './equipment'
 import type { BattleConfig, BattleView, Build, GameEvent, Quat, Settings, Shot, StageDef, Vec3 } from './types'
 import { assetUrl } from './assets'
 
@@ -20,7 +20,56 @@ function generatedMesh(geometry:THREE.BufferGeometry,material:THREE.Material){co
 function ring(radius:number,color:number,opacity=.4){const mesh=generatedMesh(new THREE.RingGeometry(radius-.018,radius,100),new THREE.MeshBasicMaterial({color,transparent:true,opacity,side:THREE.DoubleSide,depthWrite:false}));mesh.rotation.x=-Math.PI/2;return mesh}
 function labelTexture(build:Build){const c=document.createElement('canvas');c.width=512;c.height=512;const ctx=c.getContext('2d')!;ctx.clearRect(0,0,512,512);ctx.fillStyle='#fffef6';ctx.textAlign='center';ctx.font='900 64px sans-serif';ctx.fillText('HŌKAGO',256,145);ctx.font='500 21px sans-serif';ctx.fillText('YOUR LITTLE CHAMPION',256,183);ctx.lineWidth=9;ctx.strokeStyle='#fffef6';ctx.lineCap='round';if(build.face!=='none'){for(const x of [202,310]){if(build.face==='happy'){ctx.beginPath();ctx.arc(x,264,17,Math.PI,0);ctx.stroke()}else{ctx.beginPath();ctx.ellipse(x,260,9,18,0,0,Math.PI*2);ctx.fill()}}ctx.beginPath();if(build.face==='cool'){ctx.moveTo(230,310);ctx.lineTo(280,310)}else ctx.arc(256,294,24,0,Math.PI);ctx.stroke()}ctx.font='bold 25px sans-serif';ctx.fillText(build.name.slice(0,12),256,407);if(build.pattern==='dots'){ctx.globalAlpha=.3;for(let x=20;x<500;x+=48)for(let y=20;y<500;y+=48){if(x>145&&x<365&&y>100&&y<430)continue;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill()}}if(build.pattern==='stripes'){ctx.globalAlpha=.2;ctx.lineWidth=14;for(let y=-200;y<600;y+=55){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y+400);ctx.stroke()}}const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;return texture}
 
+async function loadTexture(url:string){const texture=await new THREE.TextureLoader().loadAsync(url);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;return texture}
+
+// モッフィーは3Dモデルを持たない。消しゴムのかわりに、その子の輪郭をそのまま
+// 厚みのある板へ抜いて、机に寝かせる。上下の面にその子の写真が出る。
+function moffySlab(outline:number[],size:{x:number;y:number;z:number}){
+ const points:THREE.Vector2[]=[]
+ let minU=1,maxU=0,minV=1,maxV=0
+ for(let i=0;i<outline.length;i+=2){
+  points.push(new THREE.Vector2(outline[i],outline[i+1]))
+  minU=Math.min(minU,outline[i]);maxU=Math.max(maxU,outline[i]);minV=Math.min(minV,outline[i+1]);maxV=Math.max(maxV,outline[i+1])
+ }
+ const spanU=Math.max(.05,maxU-minU),spanV=Math.max(.05,maxV-minV)
+ const centerU=(minU+maxU)/2,centerV=(minV+maxV)/2
+ // 当たり判定の箱に、縦横比を保ったまま収める。引き伸ばすと丸い子が楕円になってしまう。
+ const scale=Math.min(size.x/spanU,size.z/spanV)
+ const shape=new THREE.Shape()
+ points.forEach((p,i)=>{
+  const x=(p.x-centerU)*scale,y=-(p.y-centerV)*scale
+  i===0?shape.moveTo(x,y):shape.lineTo(x,y)
+ })
+ shape.closePath()
+ const bevel=Math.min(.055,size.y*.18)
+ const geometry=new THREE.ExtrudeGeometry(shape,{depth:size.y-bevel*2,bevelEnabled:true,bevelThickness:bevel,bevelSize:bevel,bevelSegments:2,curveSegments:1,steps:1})
+ geometry.translate(0,0,-size.y/2+bevel)
+ geometry.rotateX(-Math.PI/2)              // 押し出した向きを上にして、板を机へ寝かせる
+ // 上下の面に写真がそろうよう、型紙の座標から貼り直す。側面は色だけなので触らない。
+ const position=geometry.attributes.position,uv=geometry.attributes.uv
+ for(let i=0;i<position.count;i++){
+  uv.setXY(i,centerU+position.getX(i)/scale,1-(centerV+position.getZ(i)/scale))
+ }
+ uv.needsUpdate=true;geometry.computeVertexNormals()
+ return geometry
+}
+
+async function createMoffyPiece(build:Build):Promise<THREE.Group>{
+ const moffy=build.moffy!,size=buildBody(build).size
+ const group=new THREE.Group()
+ const texture=await loadTexture(moffy.image)
+ const face=new THREE.MeshStandardMaterial({map:texture,roughness:.86,metalness:0,emissive:new THREE.Color(0xffffff),emissiveMap:texture,emissiveIntensity:.1})
+ const edge=new THREE.MeshStandardMaterial({color:moffy.color,roughness:.7,metalness:0})
+ face.userData.generated=true;edge.userData.generated=true
+ // 0=上下の面、1=切り口。ExtrudeGeometry がこの順でグループを分ける。
+ const slab=new THREE.Mesh(moffySlab(moffy.outline,size),[face,edge])
+ slab.userData.generated=true;slab.castShadow=true;slab.receiveShadow=true
+ group.add(slab)
+ return group
+}
+
 export async function createAssembly(build:Build):Promise<THREE.Group>{
+ if(build.moffy)return createMoffyPiece(build)
  const body=BODIES.find(b=>b.id===build.body)!
  const group=new THREE.Group()
  const [bodyModel,...parts]=await Promise.all([asset(body.model),...build.equipment.map(e=>asset(PARTS.find(p=>p.id===e.id)!.model))])
@@ -73,7 +122,7 @@ export class GameScene {
  }
  private resize(){const width=this.element.clientWidth,height=this.element.clientHeight;if(!width||!height)return;this.camera.aspect=width/height;this.camera.updateProjectionMatrix();this.renderer.setSize(width,height,false)}
  private clear(){for(const child of [...this.content.children])destroy(child);for(const child of [...this.floor.children])destroy(child);for(const child of [...this.areas.children])destroy(child);this.areaKey='';this.actors=[];this.markers=[];this.objects.clear();this.clearAim()}
- async showBuild(build:Build){const id=++this.serial;const assembly=await createAssembly(build);if(this.disposed||id!==this.serial){destroy(assembly);return}this.clear();this.preview=true;this.stage=null;this.content.add(assembly);this.actors=[assembly];const d=BODIES.find(b=>b.id===build.body)!;assembly.position.y=d.size.y/2+.075
+ async showBuild(build:Build){const id=++this.serial;const assembly=await createAssembly(build);if(this.disposed||id!==this.serial){destroy(assembly);return}this.clear();this.preview=true;this.stage=null;this.content.add(assembly);this.actors=[assembly];assembly.position.y=buildBody(build).size.y/2+.075
   const pedestal=generatedMesh(new THREE.CylinderGeometry(3.7,3.7,.12,100),new THREE.MeshStandardMaterial({color:0xf7faf5,roughness:.9}));pedestal.position.y=-.01;pedestal.receiveShadow=true;this.floor.add(pedestal)
   for(const radius of [3.95,4.4,4.9]){const r=ring(radius,0x77aa96,.15);r.position.y=-.065;this.floor.add(r)}
   this.controls.mouseButtons.LEFT=THREE.MOUSE.ROTATE;this.controls.touches.ONE=THREE.TOUCH.ROTATE;this.controls.target.set(0,.25,0);this.controls.minDistance=5;this.controls.maxDistance=15;this.camera.position.set(7.7,6.8,8.8);this.camera.lookAt(this.controls.target)

@@ -1,10 +1,19 @@
 import { BODIES, PARTS } from './catalog'
-import type { AssemblyStats, Build, Equipment, Quat, ShapeSpec, Socket, Vec3 } from './types'
+import { validateMoffy } from './moffy'
+import type { AssemblyStats, BodyDef, Build, Equipment, Quat, ShapeSpec, Socket, Vec3 } from './types'
 
 export const SOCKETS: Socket[] = ['front','back','left','right','top_left','top_right']
 export const ZERO: Vec3 = {x:0,y:0,z:0}
 export const IDENTITY: Quat = {x:0,y:0,z:0,w:1}
 export const bodyDef = (id:string) => { const def=BODIES.find(b=>b.id===id); if(!def) throw new Error('本体が見つかりません。'); return def }
+// モッフィーは1体ごとに性能が違うので、収録の本体定義ではなく、その子の数値から組み立てる。
+// 本体を見に行くところは必ずここを通し、モッフィーかどうかを気にしなくて済むようにする。
+export function buildBody(build:Build):BodyDef {
+  const base=bodyDef(build.body)
+  if(!build.moffy) return base
+  const {mass,friction,restitution,size}=build.moffy.stats
+  return {...base,id:'moffy',name:build.moffy.name,size,mass,friction,restitution,color:build.moffy.color}
+}
 export const partDef = (id:string) => { const def=PARTS.find(p=>p.id===id); if(!def) throw new Error('装備パーツが見つかりません。'); return def }
 export function rotate(v:Vec3,q:Quat):Vec3 { const tx=2*(q.y*v.z-q.z*v.y),ty=2*(q.z*v.x-q.x*v.z),tz=2*(q.x*v.y-q.y*v.x); return {x:v.x+q.w*tx+q.y*tz-q.z*ty,y:v.y+q.w*ty+q.z*tx-q.x*tz,z:v.z+q.w*tz+q.x*ty-q.y*tx} }
 export function multiply(a:Quat,b:Quat):Quat { return {x:a.w*b.x+a.x*b.w+a.y*b.z-a.z*b.y,y:a.w*b.y-a.x*b.z+a.y*b.w+a.z*b.x,z:a.w*b.z+a.x*b.y-a.y*b.x+a.z*b.w,w:a.w*b.w-a.x*b.x-a.y*b.y-a.z*b.z} }
@@ -21,7 +30,7 @@ export function shapePoints(shape:ShapeSpec):Vec3[] {
 
 /** One shared mounting transform for visible models and physical colliders. */
 export function getEquipmentTransform(build:Build,equipment:Equipment):{position:Vec3;rotation:Quat} {
-  const body=bodyDef(build.body), part=partDef(equipment.id)
+  const body=buildBody(build), part=partDef(equipment.id)
   const angle={front:0,back:Math.PI,left:-Math.PI/2,right:Math.PI/2,top_left:0,top_right:0}[equipment.socket]+equipment.rotation*Math.PI/180
   const rotation=yaw(angle)
   const points=part.shapes.flatMap(shapePoints).map(p=>rotate(p,rotation))
@@ -47,6 +56,8 @@ export function validateBuild(value:unknown):Build {
   if(!value||typeof value!=='object') throw new Error('機体データの形式が正しくありません。')
   const b=value as Build
   bodyDef(b.body)
+  // モッフィーモードは、その子の見た目と性能だけで戦う。パーツは取り付けない。
+  if(b.moffy&&Array.isArray(b.equipment)&&b.equipment.length) throw new Error('モッフィーにはパーツを取り付けられません。')
   if(!Array.isArray(b.equipment)||b.equipment.length>2) throw new Error('装備できるパーツは合計2個までです。交換するパーツを選んでください。')
   const occupied=new Set<Socket>()
   for(const eq of b.equipment) {
@@ -65,11 +76,13 @@ export function validateBuild(value:unknown):Build {
   for(const key of ['color','sleeve'] as const) if(typeof b[key]!=='string'||!/^#[0-9a-fA-F]{6}$/.test(b[key])) throw new Error('色は不透明な6桁のカラーコードで指定してください。')
   if(typeof b.name!=='string'||b.name.length>30) throw new Error('機体名は30文字以内で入力してください。')
   if(typeof b.face!=='string'||typeof b.pattern!=='string') throw new Error('ステッカーのデータが正しくありません。')
-  return structuredClone(b)
+  const clone=structuredClone(b)
+  if(b.moffy) clone.moffy=validateMoffy(b.moffy)
+  return clone
 }
 
 export function getAssemblyStats(build:Build):AssemblyStats {
-  const body=bodyDef(build.body)
+  const body=buildBody(build)
   let mass=body.mass,center:Vec3={...ZERO},friction=body.friction,restitution=body.restitution
   const points:Vec3[]=[]
   for(const x of [-1,1]) for(const z of [-1,1]) points.push({x:x*body.size.x/2,y:0,z:z*body.size.z/2})

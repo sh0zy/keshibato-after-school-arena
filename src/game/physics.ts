@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier3d-compat'
-import { add, bodyDef, getAssemblyStats, getEquipmentShapes, getEquipmentTransform, IDENTITY, multiply, partDef, rotate, scale, shapeVolume, validateBuild, yaw, ZERO } from './equipment'
+import { add, buildBody, getAssemblyStats, getEquipmentShapes, getEquipmentTransform, IDENTITY, multiply, partDef, rotate, scale, shapeVolume, validateBuild, yaw, ZERO } from './equipment'
 import type { ActorState, AssemblyStats, BattleConfig, BattleSnapshot, BattleView, GameEvent, Quat, ShapeSpec, Shot, SurfaceArea, Vec3 } from './types'
 
 export const FIXED_STEP=1/120
@@ -100,7 +100,7 @@ export class PhysicsGame {
 
   private createActors() {
     this.config.players.forEach((player,index)=>{
-      const base=bodyDef(player.build.body),spawn=this.config.stage.spawns[index%this.config.stage.spawns.length]
+      const base=buildBody(player.build),spawn=this.config.stage.spawns[index%this.config.stage.spawns.length]
       const rb=this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(spawn.x,spawn.y+base.size.y/2+.06,spawn.z).setRotation(yaw(index%2===0?0:Math.PI)).setLinearDamping(.055).setAngularDamping(.25).setCcdEnabled(true).setAdditionalSolverIterations(4))
       let desc:RAPIER.ColliderDesc
       if(base.id==='round') desc=RAPIER.ColliderDesc.roundCylinder(Math.max(.02,base.size.y/2-.06),Math.min(base.size.x,base.size.z)/2-.06,.06)
@@ -136,7 +136,7 @@ export class PhysicsGame {
     const jump=shot.jump&&parts.some(p=>p.active==='jump')&&actor.grounded
     const vertical=jump?.54:0,forward=Math.sqrt(1-vertical*vertical)
     const force:Vec3={x:shot.direction.x*impulse*forward,y:impulse*vertical,z:shot.direction.z*impulse*forward}
-    const base=bodyDef(build.body)
+    const base=buildBody(build)
     // Clamp the selected hit to an actual point inside the local eraser body.
     const hitLocal:Vec3={x:shot.offset*base.size.x*.43,y:0,z:0}
     const hit=add(actor.body.translation(),rotate(hitLocal,actor.body.rotation()))
@@ -152,7 +152,7 @@ export class PhysicsGame {
     const player=this.shooter,actor=this.actors[player],build=this.config.players[player].build
     const eq=build.equipment.find(e=>partDef(e.id).active===kind)!
     const p=add(actor.body.translation(),rotate(getEquipmentTransform(build,eq).position,actor.body.rotation()))
-    p.y=actor.body.translation().y-bodyDef(build.body).size.y/2+.012
+    p.y=actor.body.translation().y-buildBody(build).size.y/2+.012
     const own=this.areas.filter(a=>a.owner===player&&a.kind===kind),limit=kind==='chalk'?3:1
     if(own.length>=limit) this.areas.splice(this.areas.indexOf(own[0]),1)
     this.areas.push({owner:player,kind,position:p,radius:kind==='chalk'?1.4:1.05})

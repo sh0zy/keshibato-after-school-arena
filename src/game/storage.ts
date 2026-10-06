@@ -1,5 +1,6 @@
-import type { BattleSnapshot, Build, Settings, StageDef, StageObject } from './types'
+import type { BattleSnapshot, Build, Moffy, Settings, StageDef, StageObject } from './types'
 import { validateBuild } from './equipment'
+import { MOFFY_LIMIT, validateMoffy } from './moffy'
 
 export const DEFAULT_SETTINGS:Settings={master:.7,bgm:.32,sfx:.65,ambient:.2,muted:false,quality:'high',shake:false,particles:true,reducedMotion:false}
 export interface RecordBook { battles:number; wins:number; used:string[]; combos:string[]; achievements:string[]; tour:number; challenges:string[] }
@@ -12,6 +13,7 @@ export function storageError(){return failure}
 export function removeSave(key:string){try{localStorage.removeItem(prefix+key)}catch{}}
 export function loadSettings():Settings {const value=load<Partial<Settings>>('settings',{});const result={...DEFAULT_SETTINGS};for(const key of ['master','bgm','sfx','ambient'] as const){if(typeof value[key]==='number')result[key]=Math.min(1,Math.max(0,value[key]!))}for(const key of ['muted','shake','particles','reducedMotion'] as const){if(typeof value[key]==='boolean')result[key]=value[key]!}if(value.quality==='low')result.quality='low';return result}
 export function loadBuild(fallback:Build):Build {try{return validateBuild(load('build',fallback))}catch{return structuredClone(fallback)}}
+export function loadMoffys():Moffy[]{const values=load<unknown>('moffys',[]);if(!Array.isArray(values))return [];return values.slice(0,MOFFY_LIMIT).flatMap(x=>{try{return [validateMoffy(x)]}catch{return []}})}
 export function loadFavorites():Build[]{const values=load<unknown>('favorites',[]);if(!Array.isArray(values))return [];return values.slice(0,40).flatMap(x=>{try{return [validateBuild(x)]}catch{return []}})}
 export function download(data:string|Blob,name:string,type='application/json'){const url=URL.createObjectURL(data instanceof Blob?data:new Blob([data],{type}));const anchor=document.createElement('a');anchor.href=url;anchor.download=name;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
 export function exportBuild(build:Build){download(JSON.stringify({version:1,build},null,2),`消しバト_${build.name}.json`)}
