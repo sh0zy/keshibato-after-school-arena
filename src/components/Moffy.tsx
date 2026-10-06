@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Upload, Trash2, Swords, LoaderCircle, Sparkles, Shuffle } from 'lucide-react'
+import { Upload, Trash2, Swords, LoaderCircle, Sparkles, Shuffle, Timer, Eraser } from 'lucide-react'
 import { createMoffy, describeMoffy, MOFFY_LIMIT } from '../game/moffy'
 import type { Moffy } from '../game/types'
 
@@ -48,14 +48,16 @@ export function MoffyPanel({moffys,mine,foe,versus,setVersus,onImport,onRemove,s
    <div><span className="eyebrow"><Sparkles size={13}/> MOFFY MODE</span><h3>あの子を、机の上へ。</h3>
     <p>Moffy Booth で生まれたモッフィーの画像を読み込むと、その子がはじくコマになります。<strong>性能は見た目から決まります</strong>——大きさ・明るさ・色の濃さ・ふちのやわらかさを測って、おもさ・ふんばり・はずみに割り当てます。同じ子なら、いつ読み込んでも同じ性能です。</p>
     <p className="muted tiny">このモードでは文房具パーツは付けません。モッフィーそのものの力だけで勝負します。</p>
+    <p className="moffy-note"><Timer size={14}/> <span><strong>読み込んだモッフィーは、その場限りです。</strong>画面を閉じたり、再読み込みすると消えます。画像も対戦の記録も、この端末には残りません。</span></p>
    </div>
    <div className="moffy-actions">
     <button className="button primary" disabled={busy||moffys.length>=MOFFY_LIMIT} onClick={()=>picker.current?.click()}>{busy?<LoaderCircle size={16} className="spin"/>:<Upload size={16}/>} モッフィーを読み込む</button>
     <input ref={picker} type="file" accept="image/*" multiple hidden onChange={e=>void take(e.target.files)}/>
-    <small className="muted">{moffys.length} / {MOFFY_LIMIT} 体</small>
+    <small className="muted">いま {moffys.length} 体（同時に {MOFFY_LIMIT} 体まで）</small>
+    {moffys.length>0&&<button className="text-button" onClick={()=>{moffys.forEach(m=>onRemove(m.id));setMine('');setFoe('');notify('モッフィーをぜんぶ手ばなしました。')}}><Eraser size={14}/> ぜんぶ手ばなす</button>}
    </div>
   </div>
-  {!moffys.length?<p className="moffy-empty">まだ1体もいません。Moffy Booth の「モッフィーを保存」で受け取った画像を読み込んでください。<br/><span className="muted tiny">PNG・JPEG どちらでも構いません。背景が1色なら自動で切り抜いて、立ち絵として置きます。</span></p>
+  {!moffys.length?<p className="moffy-empty">まだ1体もいません。Moffy Booth の「モッフィーを保存」で受け取った画像を読み込んでください。<br/><span className="muted tiny">PNG・JPEG どちらでも構いません。背景が1色なら自動で切り抜いて、その輪郭のコマにします。</span></p>
   :<>
    <div className="moffy-slots">
     <div><span className="eyebrow">あなたのモッフィー</span>{moffys.find(m=>m.id===mine)?<strong>{moffys.find(m=>m.id===mine)!.name}</strong>:<strong className="muted">えらんでください</strong>}</div>

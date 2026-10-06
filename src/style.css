@@ -18,3 +18,4 @@
 @media(max-width:650px){.moffy-intro{flex-direction:column;gap:16px;padding:19px 17px}.moffy-actions{justify-items:stretch;width:100%}.moffy-slots{flex-wrap:wrap;gap:11px}.moffy-slots>div{flex:1 1 40%}.moffy-grid{grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:10px}.moffy-portrait{width:76px;height:76px}.moffy-remove{opacity:1}}
 .players-hud img.moffy-face{border-radius:50%;background:#fffefa;object-fit:contain;padding:1px}
 .moffy-versus{flex:0 0 auto;margin:0;gap:5px}.moffy-versus select{padding:6px 9px;font-size:11px}
+.moffy-note{display:flex;align-items:flex-start;gap:8px;margin-top:11px;padding:10px 13px;border-radius:10px;background:var(--mint);font-size:11px;line-height:1.75;color:#43664f}.moffy-note svg{margin-top:3px;color:var(--green);flex-shrink:0}.moffy-note strong{color:#1f6d59}
