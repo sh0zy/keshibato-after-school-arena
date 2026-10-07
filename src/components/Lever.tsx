@@ -10,6 +10,8 @@ export function LeverPanel({state,notify}:{state:LeverSnapshot;notify:(message:s
  const online=state.status==='online',connecting=state.status==='connecting'
  async function run(action:()=>Promise<unknown>){setBusy(true);try{await action()}catch(e){notify(String(e instanceof Error?e.message:e))}finally{setBusy(false)}}
  function calibrate(end:'rest'|'full'){try{lever.calibrate(end)}catch(e){notify(e instanceof Error?e.message:String(e))}}
+ function calibrateSteer(end:'center'|'right'){try{lever.calibrateSteer(end)}catch(e){notify(e instanceof Error?e.message:String(e))}}
+ const steer=Math.round(state.steer*100)
  if(state.status==='unsupported')return <div className="lever-panel panel">
   <div className="lever-head"><Usb size={18}/><strong>T字レバー</strong><span className="lever-dot off"/></div>
   <p className="lever-warn"><TriangleAlert size={15}/> このブラウザはUSBシリアルに対応していません。パソコンの Chrome か Edge で開くと、T字レバーがつながります。指とマウスでの操作はこのままお使いいただけます。</p>
@@ -30,7 +32,17 @@ export function LeverPanel({state,notify}:{state:LeverSnapshot;notify:(message:s
    </div>
   </div>
   {!state.calibrated&&online&&<p className="lever-warn"><TriangleAlert size={15}/> まだ引き幅が登録されていません。上の1と2を順番に押してください。</p>}
-  <p className="muted tiny">レバーを引くと強さが決まり、手を離した瞬間に発射します。狙う向きは、矢印キーか画面の「狙う角度」で合わせてください。発射のあと、レバーがいちばん手前まで戻るまで次の一手は撃てません。</p>
+  {state.steerSensor&&<div className="lever-calibration">
+   <p><Wrench size={14}/> <strong>ハンドル（回転）をあわせる</strong>（グリップをその向きで1秒ほど止めてから押してください）</p>
+   <div className="lever-gauge"><div className="lever-bar lever-steer"><span style={{left:`${50+Math.min(0,steer)/2}%`,width:`${Math.abs(steer)/2}%`}}/></div><strong>{steer>0?'右':steer<0?'左':''}{Math.abs(steer)}<small>%</small></strong></div>
+   <div className="lever-readout"><span>生の値 <b>{state.steerRaw}</b></span><span>まっすぐ <b>{lever.steer.calibration.center}</b></span><span>右いっぱい <b>{lever.steer.calibration.right}</b></span>{state.steerCalibrated&&<span className="ok"><Check size={13}/> 調整済み</span>}</div>
+   <div className="lever-steps">
+    <button className="button small" disabled={!state.receiving} onClick={()=>calibrateSteer('center')}><b>3</b> まっすぐの向きを登録</button>
+    <button className="button small" disabled={!state.receiving} onClick={()=>calibrateSteer('right')}><b>4</b> 右にいっぱい回して登録</button>
+   </div>
+   {!state.steerCalibrated&&<p className="lever-warn"><TriangleAlert size={15}/> まだハンドルが登録されていません。3と4を順番に押してください。</p>}
+  </div>}
+  <p className="muted tiny">レバーを引くと強さが決まり、手を離した瞬間に発射します。{state.steerSensor?'狙う向きは、T字グリップをハンドルのように回して決めます（左右それぞれ最大60°）。':'狙う向きは、矢印キーか画面の「狙う角度」で合わせてください（回転センサー付きのレバーなら、グリップを回して狙えます）。'}発射のあと、レバーがいちばん手前まで戻るまで次の一手は撃てません。</p>
   {state.message&&<p className="muted tiny">{state.message}</p>}
  </div>
 }

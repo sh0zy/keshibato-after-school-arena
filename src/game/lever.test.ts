@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_CALIBRATION, LeverTracker } from './lever'
+import { DEFAULT_CALIBRATION, DEFAULT_STEER, LeverTracker, SteerTracker, steerDirection } from './lever'
 import type { LeverCalibration, LeverEvent } from './lever'
 
 // 実機のかわりに、生の ADC 値の列を 10ms おきに流し込んでレバーの判定を確かめる。
@@ -125,5 +125,34 @@ describe('キャリブレーション', ()=>{
  it('初期の値へ戻せる',()=>{
   const lever=stream({rest:500,full:2500})
   expect(lever.tracker.clear()).toEqual(DEFAULT_CALIBRATION)
+ })
+})
+
+describe('T字グリップの回転（ハンドル）', ()=>{
+ const calibration={center:2000,right:3000}
+ function settle(tracker:SteerTracker,raw:number){let now=1000;for(let i=0;i<60;i++){now+=10;tracker.feed(raw,now)}return tracker.value}
+ it('まっすぐで0、右いっぱいで+1、左いっぱいで-1になる',()=>{
+  expect(settle(new SteerTracker({...calibration}),2000)).toBeCloseTo(0,3)
+  expect(settle(new SteerTracker({...calibration}),3000)).toBeGreaterThan(.98)
+  expect(settle(new SteerTracker({...calibration}),1000)).toBeLessThan(-.98)
+ })
+ it('まっすぐ付近の小さなぶれは0として扱う',()=>{
+  expect(settle(new SteerTracker({...calibration}),2030)).toBe(0)
+ })
+ it('配線の向きが逆（右に回すと値が下がる）でも、右がプラスになる',()=>{
+  expect(settle(new SteerTracker({center:3000,right:2000}),2000)).toBeGreaterThan(.98)
+ })
+ it('登録前は向きを決めない',()=>{
+  const tracker=new SteerTracker({...DEFAULT_STEER})
+  expect(settle(tracker,4000)).toBe(0)
+  expect(tracker.ready).toBe(false)
+ })
+ it('右に回すと右へ、左に回すと左へ最大60°曲がる',()=>{
+  const base={x:0,z:1}
+  const right=steerDirection(base,1),left=steerDirection(base,-1)
+  expect(right.x).toBeCloseTo(-Math.sin(Math.PI/3),5)
+  expect(left.x).toBeCloseTo(Math.sin(Math.PI/3),5)
+  expect(right.z).toBeCloseTo(.5,5)
+  expect(steerDirection(base,0).x).toBeCloseTo(0,5)
  })
 })

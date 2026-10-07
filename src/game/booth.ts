@@ -9,7 +9,8 @@ import type { Moffy } from './types'
 export const BOOTH = typeof location !== 'undefined' && new URLSearchParams(location.search).has('booth')
 
 export interface BoothPlayer { name:string; image:string }
-export interface BoothStart { type:'moffy-booth:start'; players:[BoothPlayer,BoothPlayer]; versus:'cpu'|'human' }
+/** control: 'lever' は会場の物理T字レバーで遊ぶ（省略時は今までどおり指・マウス） */
+export interface BoothStart { type:'moffy-booth:start'; players:[BoothPlayer,BoothPlayer]; versus:'cpu'|'human'; control?:'touch'|'lever' }
 export type BoothMessage =
  | { type:'moffy-booth:ready' }
  | { type:'moffy-booth:result'; winner:number|null; draw:boolean }
