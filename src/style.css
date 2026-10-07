@@ -19,3 +19,6 @@
 .players-hud img.moffy-face{border-radius:50%;background:#fffefa;object-fit:contain;padding:1px}
 .moffy-versus{flex:0 0 auto;margin:0;gap:5px}.moffy-versus select{padding:6px 9px;font-size:11px}
 .moffy-note{display:flex;align-items:flex-start;gap:8px;margin-top:11px;padding:10px 13px;border-radius:10px;background:var(--mint);font-size:11px;line-height:1.75;color:#43664f}.moffy-note svg{margin-top:3px;color:var(--green);flex-shrink:0}.moffy-note strong{color:#1f6d59}
+
+/* Moffy Booth に埋め込まれたとき（?booth）。ヘッダーを出さないぶん、対戦画面を上に詰める。 */
+.booth-wait{min-height:100vh;display:grid;place-items:center;color:var(--muted);font-weight:700}
