@@ -7,6 +7,7 @@ import { chooseShot } from '../game/ai'
 import { attachInput } from '../game/input'
 import { lever, steerDirection } from '../game/lever'
 import { LeverPanel } from './Lever'
+import { listenRemote, tellBooth } from '../game/booth'
 import { audio } from '../game/audio'
 import { PARTS, CHALLENGES } from '../game/catalog'
 import { save, download } from '../game/storage'
@@ -15,9 +16,11 @@ import { assetUrl } from '../game/assets'
 
 const emptyShot:Shot={direction:{x:1,y:0,z:0},power:.55,offset:0,jump:false,strike:false,magnet:'off',chalk:false,glue:false,curve:0}
 interface ReplayFrame { t:number;view:BattleView;objects:ReturnType<PhysicsGame['getObjectTransforms']> }
-export function Battle({config,snapshot,settings,onExit,onRematch,onResult,onChallenge,onAdvance,advanceLabel,notify,leverMode=false}:{config:BattleConfig;snapshot?:BattleSnapshot;settings:Settings;onExit:()=>void;onRematch:()=>void;onResult:(view:BattleView)=>void;onChallenge:(id:string)=>void;onAdvance?:()=>void;advanceLabel?:string;notify:(s:string)=>void;
+export function Battle({config,snapshot,settings,onExit,onRematch,onResult,onChallenge,onAdvance,advanceLabel,notify,leverMode=false,phoneMode=false}:{config:BattleConfig;snapshot?:BattleSnapshot;settings:Settings;onExit:()=>void;onRematch:()=>void;onResult:(view:BattleView)=>void;onChallenge:(id:string)=>void;onAdvance?:()=>void;advanceLabel?:string;notify:(s:string)=>void;
  /** 会場の物理T字レバーで遊ぶモード（Moffy Booth の会場端末から）。レバーの案内とパネルを前に出す */
- leverMode?:boolean}){
+ leverMode?:boolean
+ /** 来場者のスマホに出したレバーで遊ぶモード（Moffy Booth の会場端末から）。操作はブースが中継してくる */
+ phoneMode?:boolean}){
  const host=useRef<HTMLDivElement>(null),scene=useRef<GameScene|null>(null),game=useRef<PhysicsGame|null>(null),input=useRef<ReturnType<typeof attachInput>|null>(null)
  const [view,setView]=useState<BattleView|null>(null),[error,setError]=useState(''),[ready,setReady]=useState(false),[thinking,setThinking]=useState(false),[shot,setShot]=useState<Shot>({...emptyShot}),[aiming,setAiming]=useState(false),[cameraMode,setCameraMode]=useState(false),[advanced,setAdvanced]=useState(false),[showPrediction,setShowPrediction]=useState(false),[replaying,setReplaying]=useState(false),[replayPaused,setReplayPaused]=useState(false),[speed,setSpeed]=useState(1),[hasReplay,setHasReplay]=useState(false),[passDevice,setPassDevice]=useState(false),[challengeDone,setChallengeDone]=useState(false),[eventText,setEventText]=useState(''),[leverState,setLeverState]=useState(()=>lever.snapshot()),[showLever,setShowLever]=useState(()=>leverMode&&!(lever.connected&&lever.tracker.calibrated))
  const refs=useRef({shot,showPrediction,thinking:false,passDevice:false,done:false,challenge:false,cameraMode:false});refs.current.shot=shot;refs.current.showPrediction=showPrediction;refs.current.cameraMode=cameraMode
@@ -69,6 +72,22 @@ export function Battle({config,snapshot,settings,onExit,onRematch,onResult,onCha
   void lever.restore()
   return()=>{lever.onEvent=null;lever.onChange=null;lever.onSteer=null}
  },[])
+ // スマホのレバー（Moffy Booth が中継）。物理レバーと同じく、引いた量が強さ、回した向きが狙い、はなすと発射。
+ // 自分の番の人のスマホからの操作だけを受ける。
+ useEffect(()=>{
+  if(!phoneMode)return
+  return listenRemote(remote=>{
+   const state=game.current?.view()
+   if(!state||state.currentPlayer!==remote.player||!canAim()||refs.current.cameraMode)return
+   if(remote.kind==='cancel'){input.current?.cancel();updateAim(null);return}
+   const next={...refs.current.shot,power:remote.power,direction:steerDirection(aimBase.current,remote.steer)}
+   if(remote.kind==='aim')updateAim(next)
+   else shoot(next)
+  })
+ },[phoneMode])
+ // いま誰のスマホのレバーが使えるかをブースへ知らせる（スマホに「きみの番！」を出すため）
+ const remoteTurn=phoneMode&&ready&&view?.phase==='aiming'&&!thinking&&!config.players[view.currentPlayer].cpu?view.currentPlayer:null
+ useEffect(()=>{if(phoneMode)tellBooth({type:'moffy-booth:turn',player:remoteTurn})},[phoneMode,remoteTurn])
  function directionToOpponent(state:BattleView){const i=state.currentPlayer,a=state.actors[i],enemy=state.actors.find((p,j)=>!p.fallen&&config.players[j].team!==config.players[i].team);if(!enemy)return{x:1,y:0,z:0};const x=enemy.position.x-a.position.x,z=enemy.position.z-a.position.z,n=Math.hypot(x,z)||1;return{x:x/n,y:0,z:z/n}}
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if((e.target as HTMLElement).matches('input,select,textarea,button')||!canAim())return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();if(e.key===' '){shoot(refs.current.shot);return}if(e.key==='Escape'){updateAim(null);return}let s={...refs.current.shot};const a=Math.atan2(s.direction.x,s.direction.z);if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const angle=a+(e.key==='ArrowLeft'?.045:-.045);s.direction={x:Math.sin(angle),y:0,z:Math.cos(angle)}}else if(e.key==='ArrowUp'||e.key==='ArrowDown')s.power=Math.min(1,Math.max(.03,s.power+(e.key==='ArrowUp'?.025:-.025)));else return;updateAim(s)};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[])
  function pause(){input.current?.cancel();game.current?.pause();setView(game.current?.view()??null)}
@@ -85,7 +104,7 @@ export function Battle({config,snapshot,settings,onExit,onRematch,onResult,onCha
    <div className="players-hud">{config.players.map((player,i)=><div className={`player-chip ${view?.currentPlayer===i?'current':''} ${view?.actors[i]?.fallen?'fallen':''}`} key={i} style={{'--player-color':player.team===0?'#299e86':'#d99554'} as React.CSSProperties}><img className={player.build.moffy?"moffy-face":""} src={player.build.moffy?player.build.moffy.image:assetUrl(`/icons/body_${player.build.body}.png`)} alt=""/><div><span>{player.cpu?'CPU':`PLAYER ${i+1}`}{view?.actors[i]?.fallen?' · 場外':''}</span><strong>{player.name}</strong><small>{player.build.equipment.map(e=>PARTS.find(p=>p.id===e.id)?.shortName).join(' + ')||'装備なし'}</small></div>{view?.currentPlayer===i&&<span className="turn-dot"/>}</div>)}</div>
    {config.challengeId&&<div className="challenge-hud"><Flag size={16}/><span>{CHALLENGES.find(c=>c.id===config.challengeId)?.description}</span>{challengeDone&&<strong>達成！</strong>}</div>}
    {eventText&&<div className="event-toast" role="status">{eventText}</div>}
-   {ready&&!paused&&!result&&!replaying&&<div className="turn-banner"><span className={`status-dot ${view?.phase==='simulating'?'orange':''}`}/>{view?.phase==='simulating'?'消しゴムの動きを見守ろう':thinking?`${current.name}が考えています…`:cameraMode?'カメラ操作中 · 右上のボタンで照準に戻る':leverMode&&leverState.status==='online'&&leverState.calibrated?`${current.name}の番。レバーを引いて${leverState.steerSensor&&leverState.steerCalibrated?'、回して向きを決めて':''}、はなすと発射！`:`${current.name}の番。ゆっくり狙おう。`}</div>}
+   {ready&&!paused&&!result&&!replaying&&<div className="turn-banner"><span className={`status-dot ${view?.phase==='simulating'?'orange':''}`}/>{view?.phase==='simulating'?'消しゴムの動きを見守ろう':thinking?`${current.name}が考えています…`:cameraMode?'カメラ操作中 · 右上のボタンで照準に戻る':phoneMode?`${current.name}の番。スマホのレバーを引いて、左右で向きを決めて、はなすと発射！`:leverMode&&leverState.status==='online'&&leverState.calibrated?`${current.name}の番。レバーを引いて${leverState.steerSensor&&leverState.steerCalibrated?'、回して向きを決めて':''}、はなすと発射！`:`${current.name}の番。ゆっくり狙おう。`}</div>}
    {passDevice&&!paused&&<div className="stage-overlay"><div className="result-card"><span className="eyebrow">YOUR TURN</span><h2>{current.name}の番</h2><p>端末を次のプレイヤーへ渡してください。</p><button className="button primary" onClick={()=>{refs.current.passDevice=false;setPassDevice(false)}}>交代しました <ArrowRight size={18}/></button></div></div>}
    {paused&&!replaying&&<div className="stage-overlay"><div className="pause-card"><span className="eyebrow">TAKE YOUR TIME.</span><h2>ひとやすみ。</h2><p>考える時間も、対戦の時間も、制限なし。</p><button className="button primary full" onClick={resume}><Play size={18}/> 対戦にもどる</button>{!ephemeral&&<button className="button full" onClick={saveNow}><Save size={17}/> この状態を保存</button>}<button className="button full" onClick={restoreStable}><Undo2 size={17}/> 直前の静止状態へ復旧</button><button className="text-button" onClick={onRematch}>はじめからやり直す</button><button className="text-button" onClick={()=>{if(!ephemeral)saveNow();onExit()}}>{ephemeral?'メニューへもどる':'保存してメニューへ'}</button></div></div>}
    {result&&!replaying&&<div className="stage-overlay"><div className="result-card"><span className="eyebrow">{view.draw?'ONE MORE ROUND?':'NICE GAME!'}</span><div className="result-icon"><Trophy size={42}/></div><h2>{view.draw?'引き分け！':config.mode==='local'||config.mode==='team'?`チーム${view.winner===0?'ミント':'オレンジ'}の勝利！`:view.winner===0?'きみの勝ち！':'もう一度、挑戦！'}</h2><p>{view.draw?'同じ発射で、両方ともリングアウト。':view.winner===0?'小さな文房具で、大きな一勝。':'装備や狙う角度を変えてみよう。'}</p><strong className="result-build">{config.players[0].build.name}</strong><div className="result-buttons">{onAdvance&&view.winner!==null&&<button className="button primary full" onClick={onAdvance}>{advanceLabel??'次の対戦へ'} <ArrowRight size={18}/></button>}<button className="button primary full" onClick={onRematch}><RotateCcw size={17}/> 同じ装備でもう一戦</button>{hasReplay&&<button className="button full" onClick={startReplay}><Rewind size={17}/> 決まった一手をリプレイ</button>}<button className="text-button" onClick={onExit}>メニューへもどる</button></div></div></div>}
