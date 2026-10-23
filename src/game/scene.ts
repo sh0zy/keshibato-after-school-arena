@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { BODIES, PARTS } from './catalog'
+import { BODIES, PARTS, TEAM_COLORS } from './catalog'
 import { buildBody, getEquipmentTransform } from './equipment'
 import type { BattleConfig, BattleView, Build, GameEvent, Quat, Settings, Shot, StageDef, Vec3 } from './types'
 import { assetUrl } from './assets'
@@ -131,7 +131,7 @@ export class GameScene {
   for(let i=0;i<props.length;i++){const o=config.stage.objects[i],prop=props[i],box=new THREE.Box3().setFromObject(prop),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());prop.position.sub(center);const wrapper=new THREE.Group();wrapper.add(prop);wrapper.scale.set(o.size.x/(size.x||1),o.size.y/(size.y||1),o.size.z/(size.z||1));const outer=new THREE.Group();outer.add(wrapper);outer.position.set(o.position.x,o.position.y,o.position.z);outer.rotation.set(o.tilt??0,o.rotation??0,0);this.content.add(outer);this.objects.set(o.id,outer)}
   const ground=generatedMesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:config.stage.night?0x222d35:0xe0e6dc,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-8.3;ground.receiveShadow=true;this.floor.add(ground)
   this.scene.fog=new THREE.Fog(config.stage.night?0x24353c:0xe9eee5,65,130)
-  config.players.forEach((p,i)=>{const marker=ring(1.7,p.team===0?0x36b492:0xe9a15d,.7);marker.position.y=.028;this.markers.push(marker);this.floor.add(marker)})
+  config.players.forEach((p,i)=>{const marker=ring(1.7,p.team<2?(p.team===0?0x36b492:0xe9a15d):parseInt(TEAM_COLORS[p.team%4].slice(1),16),.7);marker.position.y=.028;this.markers.push(marker);this.floor.add(marker)})
   this.light.intensity=config.stage.night?3.5:4.5;this.controls.target.set(0,0,0);this.controls.minDistance=16;this.controls.maxDistance=60;this.camera.position.set(23,26,29);if(this.element.clientWidth<650)this.camera.position.multiplyScalar(1.18);this.controls.update();this.setCameraMode(false)
  }
  update(view:BattleView){view.actors.forEach((a,i)=>{const mesh=this.actors[i];if(!mesh)return;mesh.position.set(a.position.x,a.position.y,a.position.z);mesh.quaternion.set(a.rotation.x,a.rotation.y,a.rotation.z,a.rotation.w);mesh.visible=!a.fallen||a.position.y>-15;const marker=this.markers[i];if(marker){marker.position.set(a.position.x,.03,a.position.z);marker.visible=!a.fallen&&view.currentPlayer===i&&view.phase!=='result'}})

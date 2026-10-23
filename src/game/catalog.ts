@@ -2,6 +2,8 @@ import type { BodyDef, Build, Combo, PartDef, ShapeSpec, Socket, StageDef, Stage
 import { assetUrl } from './assets'
 
 const v = (x:number,y:number,z:number):Vec3 => ({x,y,z})
+/** チームの色（0 ミント・1 オレンジ。ブースの3〜4人対戦はひとりずつ別のチームになるので4色ある） */
+export const TEAM_COLORS=['#299e86','#d99554','#5b8fd9','#c46aa8']
 export const SOCKET_LABELS:Record<Socket,string> = {front:'前',back:'後ろ',left:'左',right:'右',top_left:'上面左',top_right:'上面右'}
 const sockets = Object.keys(SOCKET_LABELS) as Socket[]
 export const BODIES:BodyDef[] = [

@@ -14,7 +14,7 @@ export interface BoothPlayer { name:string; image:string }
  * （スマホの操作はブースが中継し、moffy-booth:remote で届く）。省略時は今までどおり指・マウス。
  */
 export type BoothControl = 'touch'|'lever'|'phone'
-export interface BoothStart { type:'moffy-booth:start'; players:[BoothPlayer,BoothPlayer]; versus:'cpu'|'human'; control?:BoothControl }
+export interface BoothStart { type:'moffy-booth:start'; players:BoothPlayer[]; versus:'cpu'|'human'; control?:BoothControl }
 /** スマホのレバーの操作。player は何人目のレバーか、power は引いた強さ（0〜1）、steer は回した向き（-1〜+1） */
 export interface BoothRemote { type:'moffy-booth:remote'; player:number; kind:'aim'|'shoot'|'cancel'; power:number; steer:number }
 export type BoothMessage =
@@ -29,12 +29,12 @@ export function tellBooth(message:BoothMessage){
  if(BOOTH&&window.parent!==window)window.parent.postMessage(message,location.origin)
 }
 
-/** ブースからの「この2体で始めて」を待つ。戻り値で待つのをやめる。 */
+/** ブースからの「この2〜4体で始めて」を待つ。3人以上はみんなバラバラのチームで最後まで残った人の勝ち。戻り値で待つのをやめる。 */
 export function listenBooth(onStart:(start:BoothStart)=>void){
  const handle=(e:MessageEvent)=>{
   if(e.origin!==location.origin||e.source!==window.parent)return
   const data=e.data as BoothStart
-  if(data?.type!=='moffy-booth:start'||!Array.isArray(data.players)||data.players.length!==2)return
+  if(data?.type!=='moffy-booth:start'||!Array.isArray(data.players)||data.players.length<2||data.players.length>4)return
   onStart(data)
  }
  window.addEventListener('message',handle)

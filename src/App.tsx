@@ -24,15 +24,19 @@ export default function App(){
  useEffect(()=>{save('record',record)},[record])
  // モッフィーはその場限り。端末には残さないので、前の版が保存した分があれば消しておく。
  useEffect(()=>{removeSave('moffys')},[])
- // ブースに埋め込まれているときは、ブースから届いた2体ですぐ対戦を始める。メニューは出さない。
+ // ブースに埋め込まれているときは、ブースから届いた2〜4体ですぐ対戦を始める。メニューは出さない。
  const [boothLoading,setBoothLoading]=useState(BOOTH)
  useEffect(()=>{
   if(!BOOTH)return
   const stop=listenBooth(async start=>{
    setBoothLoading(true)
    try{
-    const [mine,foe]=await Promise.all(start.players.map(moffyFromBooth))
-    const c:BattleConfig={stage:structuredClone(STAGES[0]),players:[{build:moffyBuild(mine),team:0,cpu:false,name:mine.name},{build:moffyBuild(foe),team:1,cpu:start.versus==='cpu',name:foe.name}],mode:'moffy',difficulty:'normal',firstPlayer:0,seed:crypto.getRandomValues(new Uint32Array(1))[0]}
+    const moffys=await Promise.all(start.players.map(moffyFromBooth))
+    const stage=structuredClone(STAGES[0])
+    // 3〜4人のときは机の上にまんべんなく散らばって置く（2人のときは今までどおり左右に向かい合う）
+    if(moffys.length===3)stage.spawns=[{x:-6,y:.4,z:-3},{x:6,y:.4,z:-3},{x:0,y:.4,z:5}]
+    if(moffys.length===4)stage.spawns=[{x:-5.5,y:.4,z:-4},{x:5.5,y:.4,z:4},{x:-5.5,y:.4,z:4},{x:5.5,y:.4,z:-4}]
+    const c:BattleConfig={stage,players:moffys.map((m,i)=>({build:moffyBuild(m),team:i,cpu:i>0&&start.versus==='cpu',name:m.name})),mode:'moffy',difficulty:'normal',firstPlayer:0,seed:crypto.getRandomValues(new Uint32Array(1))[0]}
     setBattle({config:c,key:Date.now(),lever:start.control==='lever',phone:start.control==='phone'});void audio.unlock().catch(()=>{})
    }catch(e){tellBooth({type:'moffy-booth:error',message:e instanceof Error?e.message:String(e)})}
    finally{setBoothLoading(false)}
