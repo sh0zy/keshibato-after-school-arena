@@ -5,6 +5,9 @@ import type { Build, Moffy, MoffyStats, MoffyTraits, Vec3 } from './types'
 // 重さ・ふんばり・はずみに割り当てる。同じ画像なら必ず同じ性能になり、相談して決める余地はない。
 
 export const MOFFY_LIMIT=12       // 1台に置いておけるモッフィーの数
+// ?moffy を付けて開くと、モッフィーモードだけを遊ぶ画面になる。
+// 学祭のブースなどで来場者に端末を渡すときに使う。付けずに開けば今までどおり全部遊べる。
+export const MOFFY_ONLY = typeof location!=='undefined' && new URLSearchParams(location.search).has('moffy')
 const SAMPLE=128                  // 特徴を測るときの一辺。これ以上細かくしても結果は変わらない
 const STORE=256                   // 保存しておく画像の一辺
 const clamp=(value:number,min:number,max:number)=>Math.min(max,Math.max(min,value))
